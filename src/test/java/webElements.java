@@ -5,7 +5,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 
-import java.sql.SQLOutput;
+
 import java.time.Duration;
 import java.util.List;
 
@@ -39,7 +39,8 @@ public class webElements {
         driver.findElement(By.xpath("(//a[@value='MAA'])[1]")).click();
         driver.findElement(By.id("ctl00_mainContent_ddl_destinationStation1_CTXT")).click();
         //Parent - child find method using xpath
-        driver.findElement(By.xpath("//div[@id='ctl00_mainContent_ddl_destinationStation1_CTNR'] //a[@value='HBX']")).click();
+        driver.findElement(By.xpath("//div[@id='ctl00_mainContent_ddl_destinationStation1_CTNR'] //a[@value='HBX']"))
+                .click();
 
         //AutoSuggestive dropdown
         driver.findElement(By.id("autosuggest")).sendKeys("ind");
