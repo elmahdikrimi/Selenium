@@ -28,7 +28,7 @@ public class webElements {
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
         driver.findElement(By.id("divpaxinfo")).click();
         //Thread.sleep(2000);
-        for (int i=0;i<3;i++){
+        for (int i = 0; i < 3; i++) {
             driver.findElement(By.id("hrefIncAdt")).click();
         }
         driver.findElement(By.id("btnclosepaxoption")).click();
@@ -47,8 +47,8 @@ public class webElements {
         //find multiple elements
         List<WebElement> options = driver.findElements(By.cssSelector("li.ui-menu-item a"));
         //iterate through the list elements using enhanced for loop
-        for(WebElement option :options){
-            if(option.getText().equalsIgnoreCase("india")){
+        for (WebElement option : options) {
+            if (option.getText().equalsIgnoreCase("india")) {
                 option.click();
                 break;
             }
@@ -67,7 +67,7 @@ public class webElements {
         //using html attributes to verify if an element is enabled or disabled
         System.out.println(driver.findElement(By.id("Div1")).getAttribute("style"));
 
-        if(driver.findElement(By.id("Div1")).getAttribute("style").contains("1")){
+        if (driver.findElement(By.id("Div1")).getAttribute("style").contains("1")) {
             Assert.assertTrue(true);
             System.out.println("Radio button is Enabled");
         } else {

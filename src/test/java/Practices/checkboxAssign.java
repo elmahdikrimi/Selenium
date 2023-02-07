@@ -1,3 +1,5 @@
+package Practices;
+
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -7,7 +9,7 @@ import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 
 /**
- * checkboxAssign
+ * Practices.checkboxAssign
  */
 public class checkboxAssign {
 

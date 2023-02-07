@@ -1,3 +1,5 @@
+package Practices;
+
 import java.util.List;
 
 import org.openqa.selenium.By;
