@@ -1,0 +1,196 @@
+TestNG Assertions: 
+
+Assert.assertTrue()
+Assert.assertFalse()
+Assert.assertEquals()
+
+Assert.assertTrue(true)
+
+Driver: 
+	driver.manage().window().maximize();
+	
+
+Select DropDown : 
+		Select dropdown = new Select(driver.findElement(By.id("ctl00_mainContent_DropDownListCurrency")));
+		dropdown.selectByIndex(3)
+		dropdown.selectByVisibleText("AED");
+        dropdown.selectByValue("INR");
+        System.out.println(dropdown.getFirstSelectedOption().getText());
+
+Xpath find child in parent Selector: 
+"//div[contains(@data-url,'tokyo')]  //ul[@class='qty-list']"
+
+Handling Alerts: (switch the context from the browser to alerts)
+	driver.switchTo().alert().accept()
+	driver.switchTo().alert().dismiss();
+	driver.switchTo().alert().getText()
+	
+Code formatting and Debugging: 
+First letter of a class name should be Capital, and camelCase for the rest 
+
+Xpath selection using the text: 
+//button[text()='Add to cart']
+
+Programming Logic to iterate through arrays and add to cart ( Refer to GreenKart.java file)
+
+Synchronization: 
+	Implicit wait: applied to global level
+	driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
+	
+	Explicit Wait: Applied to a specific element 
+	WebDriverWait w = new WebDriverWait(driver, Duration.ofSeconds(5));
+	w.until(ExpectedConditions.invisibilityOfElementLocated(By.className("promoInfo")));
+	
+	Fluent Wait: 
+
+Actions, Frames and Child windows handling: 
+	Actions (Mouse and keyboard actions): 
+	MouseOver:
+	Actions a = new Actions(driver);
+	a.moveToElement(driver.findElement(By.cssSelector("#nav-link-accountList")))
+                .build()
+                .perform();
+	.keyDown(Keys.SHIFT)
+	.DoubleClick()
+	.ContextClick() to right click
+	
+	Child Windows: 
+	    Set<String> windows = driver.getWindowHandles();
+        //switch to child window
+        Iterator<String> it = windows.iterator();
+        //get first index in the Set
+        String parentId = it.next();
+        // go into the second by using .next() again
+        String childId = it.next();
+        driver.switchTo().window(childId);
+	Frames: 
+		driver.switchTo().frame(driver.findElement(By.className("demo-frame")));
+		driver.switchTo().frame("frame-top");
+		by name or by webElement, or by index
+	Drag And Drop : 
+	    Actions a = new Actions(driver);
+        a.dragAndDrop(driver.findElement(By.id("draggable")), driver.findElement(By.id("droppable")))
+                .build().perform();
+	Switch back to the default window: 
+	driver.switchTo().defaultContent();
+				
+				
+	Get count of all the links in a page: 
+	System.out.println(driver.findElements(By.tagName("a")).size());
+	
+	//find elements inside a webElement (limiting webdriver scope)
+    WebElement footerDriver = driver.findElement(By.id("footer"));
+    System.out.println(footerDriver.findElements(By.tagName("a")).size());
+	//limiting scope even further
+    WebElement columnDriver = footerDriver.findElement(By.xpath("//table/tbody/tr/td[1]/ul"));
+	
+	//pass keys as text with SendKeys() by passing a sequence of keys using key.chord()
+	String clickOnLinkTab = Keys.chord(Keys.CONTROL, Keys.ENTER);
+	
+    for(int i=1;i<firstColumn.findElements(By.tagName("a")).size();i++){
+    firstColumn.findElements(By.tagName("a")).get(i).sendKeys(clickOnLinkTab);
+    }
+	
+	//iterate through opened tabs 
+	Set<String> windows = driver.getWindowHandles();
+    Iterator<String> it = windows.iterator();
+
+	//hasNext() Returns true if the iteration has more elements.
+	//it.next() pass to the next
+    while(it.hasNext()){
+		driver.switchTo().window(it.next());
+		System.out.println(driver.getTitle());
+    }
+	if(dates.get(i).getText().equalsIgnoreCase("24"))
+	if(dates.get(i).getText().contains("24"))
+	
+	Window Srolling: 
+	(executing a JavaScript script that allow us to scroll by using javascript executer) 
+	JavascriptExecutor js = (JavascriptExecutor) driver;
+    //.executeScript() method to provide the script
+    js.executeScript("window.scrollBy(0,500)"); //x,y indexes
+	
+	Table scrolling:
+	//using DOM to get the table and using method scrollTop
+	js.executeScript("document.querySelector('.tableFixHead').scrollTop=5000");
+	
+	Handle Table Grids:
+	List<WebElement> values = driver.findElements(By.cssSelector("#product td:nth-child(4)"));
+	Parsing Strings into Integers:
+	sum += Integer.parseInt(values.get(i).getText());
+	
+	$(".totalAmount") //use in the console to verify selectors, without the selectorHub plugin
+	
+	//chaining the findElemen
+	List<WebElement> secondrow=table.findElements(By.tagName("tr")).get(2).findElements(By.tagName("td"));
+	
+	Miscellaneous topics: 
+	
+	Handling HTTPS certifications in different browsers using chrome options: 
+	
+	//setting behavior for chrome
+    ChromeOptions options = new ChromeOptions();
+    options.setAcceptInsecureCerts(true); //bypass ssl
+    FirefoxOptions firefoxOptions = new FirefoxOptions();
+    //passing the options in the driver
+    WebDriver driver = new ChromeDriver(options);
+    driver.get("https://expired.badssl.com/");
+	
+	//open browser with extensions
+	//add proxy
+	
+        //Maximizing the window
+        driver.manage().window().maximize();
+        //delete all the cookies
+        driver.manage().deleteAllCookies();
+        //delete a specific cookie by name
+        driver.manage().deleteCookieNamed("nameOfCookie");
+		
+	    //taking a screenshot as a FILE
+		//Casting the driver ((TakeScreenshot)driver)
+        File src = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+        //moving the screenshot to our system
+        FileUtils.copyFile(src, new File("C:/Users/emkrimi/Desktop/screenShot.png"));
+		
+		//Checking broken links
+		//by checking their status called when called using java methods
+		Getting the link href using getAttribute
+		String href = driver.findElement(By.linkText("Broken Link")).getAttribute("href");
+		//opening a connection with the href and getting the response code
+		HttpURLConnection connection = (HttpURLConnection)new URL(href).openConnection();
+        connection.setRequestMethod("HEAD");
+        connection.connect();
+        int resCode = connection.getResponseCode();
+        System.out.println(resCode);
+		
+		//Iterate through all the links and check for broken links
+		    for(WebElement link:links){
+            String a = link.getAttribute("href");
+            HttpURLConnection con = (HttpURLConnection)new URL(a).openConnection();
+            con.setRequestMethod("HEAD");
+            con.connect();
+            int rc = con.getResponseCode();
+            if(rc>400){
+                System.out.println(link.getText() + " is broken with Status code " + rc);
+                //fail the test
+                Assert.assertTrue(false);
+            }
+        }
+		//Soft Assertions ( stores all failures and assert them later when called with assertAll() ) 
+		//unline hard assertions, the script doesnt stop when it fails, it continues till the end and stores 
+		all the failures
+		SoftAssert as = new SoftAssert();
+		//the iterations through all links with soft assertions
+		    for(WebElement link:links){
+            String a = link.getAttribute("href");
+            HttpURLConnection con = (HttpURLConnection)new URL(a).openConnection();
+            con.setRequestMethod("HEAD");
+            con.connect();
+            int rc = con.getResponseCode();
+            //soft Assertions saves the assertion failures and doesn't stop the loop when it fails
+            as.assertTrue(rc<400,link.getText() + " is broken with Status code " + rc);
+        }
+            //call assertAll() to fail the test if there is a failure and report
+            as.assertAll();
+		
+		

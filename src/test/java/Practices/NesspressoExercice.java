@@ -1,19 +1,27 @@
 package Practices;
 
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import java.util.List;
 
+
 public class NesspressoExercice {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         WebDriver driver = new ChromeDriver();
         driver.get("https://ma.buynespresso.com/ma_fr/cafe.html");
         String productName = "TOKYO VIVALTO LUNGO";
         String capsuleQty = "10";
         addToCart(driver,productName);
         selectQty(driver,capsuleQty);
+
+        //find elements inside a webElement
+        WebElement footerDriver = driver.findElement(By.id("footer"));
+        System.out.println(footerDriver.findElements(By.tagName("a")).size());
+        //limiting scope even further
+        WebElement columnDriver = footerDriver.findElement(By.xpath("//table/tbody/tr/td[1]/ul"));
     }
 
     public static void addToCart(WebDriver driver, String productName){

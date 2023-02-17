@@ -12,5 +12,7 @@ public class Frames {
         Actions a = new Actions(driver);
         a.dragAndDrop(driver.findElement(By.id("draggable")), driver.findElement(By.id("droppable")))
                 .build().perform();
+        //switch back to the main window
+        driver.switchTo().defaultContent();
     }
 }
