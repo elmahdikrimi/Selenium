@@ -192,5 +192,41 @@ Actions, Frames and Child windows handling:
         }
             //call assertAll() to fail the test if there is a failure and report
             as.assertAll();
-		
-		
+
+		//check if a string starts with a letter
+		name.startsWith("A");
+
+		Java Streams: (Java 8)
+		Filter:
+		//filtering an array using stream
+		//converting the array into a steam and applying filter
+		//filter gets executed when the condition is true
+		//use {} for the condition if there are multiple lines
+        Long c = names.stream().filter(s -> s.startsWith("E")).count(); //counts the names that start with E
+        //using stream directly
+        Long b = Stream.of("Milan","Napoli","Atalanta","Juve").filter(t -> t.startsWith("A")).count();
+
+        Map : (help modify the result of a stream)
+        //print names which end with "E" and Uppercase them
+        Stream.of("Vidic","West Brown","Rio","Evra","Gary Neveille").filter(n -> n.endsWith("e")).map(n -> n.toUpperCase())
+                        .forEach(s -> System.out.println(s));
+        //print names that start with N, uppercased and sorted using .sorted()
+        List<String> langs = Arrays.asList("Java","JavaScript","C#","C++","CocaCola");
+        langs.stream().filter(s -> s.startsWith("C")).sorted().map(s -> s.toUpperCase()).forEach(s -> System.out.println(s));
+
+        //Merging and concatenating two arrays
+        Stream<String> newStream = Stream.concat(names.stream(), langs.stream());
+        newStream.sorted().forEach(s -> System.out.println(s));
+
+        //find element in array using anyMatch()
+        boolean flag = Stream.of("Pizza","Raviolli","Parmesano").anyMatch(s -> s.equalsIgnoreCase("pizza"));
+        Assert.assertTrue(flag);
+
+        //Collect: converts the results of Streams to a list
+        List<String> ls = Stream.of("Ciro","Del Piero","Totti","Cannavaro").filter(s -> s.endsWith("o"))
+                        .map(s -> s.toUpperCase()).collect(Collectors.toList());
+
+        //remove duplicates using distinct()
+                List<Integer> nums = Arrays.asList(1,2,3,3,3,5,5,5,4,4,9,9);
+                nums.stream().distinct().sorted().forEach(n -> System.out.println(n));
+
