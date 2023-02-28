@@ -33,7 +33,7 @@ public class JavaStreams {
 
         //print names which end with "E" and Uppercase them
         // -> lambda expression
-        Stream.of("Vidic","West Brown","Rio","Evra","Gary Neveille").filter(n -> n.endsWith("e")).map(n -> n.toUpperCase())
+        Stream.of("Vidic","West Brown","Rio","Evra","Gary Neville").filter(n -> n.endsWith("e")).map(n -> n.toUpperCase())
                 .forEach(s -> System.out.println(s));
 
         //print names that start with N, uppercased and sorted using .sorted()

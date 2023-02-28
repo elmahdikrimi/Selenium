@@ -230,3 +230,48 @@ Actions, Frames and Child windows handling:
                 List<Integer> nums = Arrays.asList(1,2,3,3,3,5,5,5,4,4,9,9);
                 nums.stream().distinct().sorted().forEach(n -> System.out.println(n));
 
+        //Relative Locators
+        //Above()
+        WebElement nameEditBox = driver.findElement(By.cssSelector("form input[name='name']"));
+        driver.findElement(with(By.tagName("label")).above(nameEditBox));
+        WebElement label = driver.findElement(By.cssSelector("[for='dateofBirth']"));
+        driver.findElement(with(By.tagName("input")).below(label)).click(); //relative locator skip elements that has 'flex'
+        //relative locator toLeftOf()
+        WebElement text = driver.findElement(By.cssSelector("label[for='exampleCheck1']"));
+        driver.findElement(with(By.tagName("input")).toLeftOf(text)).click();
+        //relative locator toRightOf()
+        WebElement radio = driver.findElement(By.id("inlineRadio1"));
+        System.out.println(driver.findElement(with(By.tagName("label")).toRightOf(radio)).getText());
+
+        //opening new tabs/windows
+        driver.switchTo().newWindow(WindowType.TAB);
+        driver.switchTo().newWindow(WindowType.WINDOW);
+        //Then we should switch to the new tab/window using windowsHandles and iterator
+
+        //Take a partial screenshot of the web element only
+        //Take a partial Screenshot of the web Element "name"
+        File file = name.getScreenshotAs(OutputType.FILE);
+        //Convert the file into a png and save it
+        FileUtils.copyFile(file, new File("C:/Users/emkrimi/Desktop/element.png"));
+
+        //Capturing the Height and Width of a Web element
+        System.out.println(name.getRect().getDimension().getHeight());
+        System.out.println(name.getRect().getDimension().getWidth());
+
+        //Framework 1: TestNG
+        To run TestNG:
+            use @test annotation followed by the method. example:
+                @Test
+                public void demo(){
+                    System.out.println("hello");
+                }
+            You can define multiple tests in a single class.
+        Create TestNG.xml (install "Create TestNG XML" in IntelliJ) : Right click on project => Create TestNG XML
+        Project xml structure: Test Suite => Test Folder(Shell) => Test Cases
+        Run All the tests (Test suite) in the TestNG xml file: Right click on the TestNG xml file => Run...
+
+        Modifying the TestNG xml file by adding new <test> and fill it with the <classes> we want to run inside it.
+            Example: <test name="my test"><classes><class name="package.classname"><methods><include name="classname"/>
+
+        Include And Exclude TestCases:
+
