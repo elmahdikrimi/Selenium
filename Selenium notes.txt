@@ -270,8 +270,156 @@ Actions, Frames and Child windows handling:
         Project xml structure: Test Suite => Test Folder(Shell) => Test Cases
         Run All the tests (Test suite) in the TestNG xml file: Right click on the TestNG xml file => Run...
 
+        We can create multiple TestNG xml files
+
         Modifying the TestNG xml file by adding new <test> and fill it with the <classes> we want to run inside it.
             Example: <test name="my test"><classes><class name="package.classname"><methods><include name="classname"/>
+            We use Self closing tags like <include name="classname"/> when there is one line of code in it.
 
         Include And Exclude TestCases:
+        To exclude a method in the TestNG xml: we add the tag <exclude name="MobileSearch"/>
+        To include a method in the test, we use include <include name="MobileTab"/>
+
+        Using Regular expression to execute test cases:
+        Ex: Excluding all the method that start with the word "Mobile" by adding .*
+        <exclude name="Mobile.*"/>
+
+        Running test case on Package level(folder) ex: "test" in the TestNG xml file
+        <packages><package name="test"/></packages>
+
+        TestNG Annotations:
+        TestNG annotations come before methods(tests)
+        @BeforeTest : Gets executed FIRST before any test in the test folder <test>
+        @AfterTest : Gets executed AFTER Tests in the folder <test>
+
+        Suite has all the tests in a TestNG xml file.
+        @BeforeSuite : Runs before all the tests in the suite
+        @AfterSuite: Runs after all the tests in the suite
+
+        @BeforeMethod : Runs before EACH method => test block
+        @AfterMethod: Runs after each method
+
+        @AfterClass: Runs before executing any method in the Class
+        @BeforeClass: runs after executing all methods in class
+
+        Run different test from different classes using GROUPS
+        we use : @Test(groups={"Smoke"})
+        In the TestNG xml file (before the classes tag) we use :
+        <groups><run><include name="Smoke"/><run/><groups/>
+        We can also use exclude to run all tests except the ones with the tag "smoke"
+        <groups><run><exclude name="Smoke"/><run/><groups/>
+
+        Helper Annotations:
+
+        Executing a test case depending on another test case(method) ex: MobileLogin
+        @Test(dependsOnMethods = {"MobileLogin"})
+        Executing multiple methods before a test case
+        @Test(dependsOnMethods = {"MobileLogin","MobileAPI"})
+
+        Skip a test case while executing:
+        @Test(enabled = false)
+
+        Setting a timeOut for a particular method only:
+        @Test(timeOut = 4000)
+
+        Parameterizing from TestNG xml file:(drive data from TestNG xml file)
+
+        Parameter Defined under the <suite> tag is applicable to all the tests in the suite
+        Parameter Defined inside the <test> tag, is applicable to only the tests inside that <test> folder. (for unique data for each test)
+        <parameter name="url" value="https://fb.com"/>
+        To use in the test :
+        @Parameters({"url"})
+        @Test
+        public void MobileLogin(String nameUrl){System.out.println(nameUrl);} nameUrl gets the value of url
+        Defining multiple parameters and passing them in tests:
+        <parameter name="url" value="https://fb.com"/>
+        <parameter name="name" value="necro"/>
+        To use in test: @Parameters({"url","name"})
+        public void MobileLogin(String nameUrl, String name){System.out.println(nameUrl + name);}
+
+        Parameterizing with multiple data sets: Using DataProvider annotations to iterate through multiple sets of data
+        Using @DataProvider annotation and multi dimensions array Object[][]
+        Example:
+        @DataProvider
+            public Object[][] getData(){
+                Object[][] data = new Object[3][2];
+                // three sets of data with 2 inputs ex
+                data[0][0] = "oneUsername";
+                data[0][1] = "onePassword";
+                //Second set
+                data[1][0] = "twoUsername";
+                data[1][1] = "twoPassword";
+                //third set
+                data[2][0] = "threeUsername";
+                data[2][1] = "threePassword";
+                return data;
+            }
+        To use the data in a test: We use the annotation @Test(dataProvider="getData") getData is the name of the method with the data
+        @Test(dataProvider="getData")
+            public void morning(String username, String password){System.out.println("morning " + username + password);}
+        It will iterate through all the rows and print the two data inputs username and password
+
+        We can pass the data from the TestNG xml file or from the test class by Using DataProvider annotation helper attribute
+
+        TestNG Listeners:(interfaces)
+        Listeners listen to the test case results and status
+        To use listeners, we create a java class ex: "listeners" and we implement ITestListener inside
+        public class Listeners implements ITestListener {}
+        Then we create ITestListener methods inside such: onStart, onTestFailure, onTestSuccess ... And put code inside
+        These methods will be executed depends on the event happening(failure, success, start, finish...)
+        We need to Define the Listeners in the TestNG xml file right after the <suite> tag:
+        <listeners><listener class-name="folderName.Listeners"/></listeners> class-name=class pathname
+        Get result info from the Listeners using result object and its methods:
+        Example:
+        public void onTestFailure(ITestResult result) {
+        System.out.println(result.getName());
+        }
+
+        Running tests in parallel with TestNG:
+        To run test in parallel mode we edit the <suite> tag with parallel and thread-count attributes:
+        <suite name="All Test Suite" parallel="tests" thread-count="3">
+
+        if we want to run classes on parallel mode we add the same attributes parallel and thread-count to the <test> tag
+        <test name="Second test" parallel="classes" thread-count="2">
+
+        Inheritance and TestNG:
+        public class ps{
+            public void doThis(){}
+            @BeforeMethod
+        }
+        ps1 inherit from ps
+        we can not use main() and use @Test directly and methods
+        @BeforeMethod gets run too because the child class scans all the methods the parent class
+        child class is aware of everything in the parent class
+        public class ps1 extends ps {
+            @Test
+            public void testReturn(){
+            doThis(); //inherited from ps
+            }
+        }
+        if there is no inheritance, we need to create and object of the class before we can use its methods and variables
+        PS ps = new PS();
+        ps.doThis();
+
+        Pass values from test through Parameterized Constructor and this keyword:
+
+        There is basically two ways to get data from other classes, inheritance and creating objects of classes
+        Constructor concept:(created by the help of the IDE suggestion)
+        Sending parameters to a class so it can be passed automatically in the methods from it
+        Example: PS ps = new PS(3); 3 is the parameter
+        Then you dont need to send the 3 in ps.doThis()
+        in the PS class: the constructor looks something like this
+        public PS (int a){
+        this.a=a;
+        }
+        this refers to current class variable
+        a gets its value from the parameter we passed in PS ps = new PS(3);
+
+
+
+
+
+
+
+
 
