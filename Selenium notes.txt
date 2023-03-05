@@ -415,7 +415,197 @@ Actions, Frames and Child windows handling:
         this refers to current class variable
         a gets its value from the parameter we passed in PS ps = new PS(3);
 
+        User Super() in child class constructor = (results in) parent class constructor is invoked
+        Super(a) is only used when there is inheritance in place
+        'a' is an argument received from test case and it will be transferred into parent constructor.
 
+        Create a Maven project
+
+        POM: page object model
+        Create a class in src/main/java called landingPage
+        Create a constructor class to initialize the driver
+        public landingPage(Webdriver driver){
+        this.driver=driver;
+        }
+        In the test, we need to create an object of the class LandingPage() and pass the driver
+        LandingPage landingpage = new LandingPage(driver);
+
+        Page Factory:
+        instead of using WebElement username = driver.findElement(By.id("userEmail"));
+        Use: @FindBy(id="userEmail")
+             WebElement email; //will be saved under the variable email
+        use xpath= css= id= tagName= (click on @FindBy to know more)
+            @FindBy(css=".m3")
+            List<WebElement> products; // findElements
+        To use the PageFactory, we need to initialize it in the constructor by adding
+        PageFactory.initElements(driver, this);
+
+        Creating an action method:
+        //passing the elements(page factory elements)
+        public void login(String mail, String password){
+            email.sendKeys(mail);
+            password.sendKeys(password);
+            submit.click();
+        }
+        Call the method in the test:
+        LandingPage.login("me@gmail.com","pass123");
+
+        Abstract components : (re usable components) visibilityOfElements, implicitWaits,... Elements that are common in the whole app
+        A parent class to other page object model classes (they inherit from this one)
+        After creating a constructor and getting the driver from child classes that inherit from this class by using super super(driver);
+        we need to catch it in the parent constructor by using this
+        //defining a varibale webdriver and catching it then passing it in the constructor
+        WebDriver driver;
+        public AbstractComponents (WebDriver driver){
+        this.driver=driver;
+        }
+        In the class we can define a method like this:
+        By productsBy = By.css(".md3");
+        public void WaitForElement(By findBy){ //passing By in the method
+            WebDriverWait wait = new WebDriverWait(driver, Duration.OfSeconds(5)),
+            wait.until(ExpectedConditions.VisibilityOfElementLocated(productsBy));
+        }
+        Using the abstractComponent method in one of the pom classes
+        public List<WebElement> productsList(){
+        WaitForElement(".im3");
+        return products;
+        }
+        OOP: pass variable from child to parent using super()
+        child classes have access to parent class methods
+
+        Stream filter if you want to retrieve the element
+                Anymatch: if you want to verify the existence of the element
+
+        Drive object creation within POM classes(when action methods land on a new page, add the creation of that page class in the method)
+        Create global variables in top of the class before all the methods so they can be accessible to all methods
+        Ex: WebDriver driver;
+            LandingPage LP;
+        Test Configuration:
+
+        Create a base test with reusable test configuration
+
+        //properties class:
+        create a file globalData.properties
+        add: browser=chrome
+        Using the file by getting data from it in the base test class:
+        Properties prop= new Properties();
+        FileInputStream fis = new FileInputStream("location of file properties");
+        prop.load(fis);
+        //getting the property
+        String browserName = prop.getProperty("browser")
+        if(browserName.equalsIgnoreCase("chrome")) use chrome driver
+        else if browserName.equalsIgnoreCase("firefox") use firefox driver
+
+        Group tests togheter(all login test in same class, catalogue test in class...)
+        @BeforeMethod(alwaysRun=true) // to always run no matter what grouping is applied
+        Object[][] names = new Object[][] {{"",""},{"",""}};
+        Using HashMap to pass data for the DataProvider (Section 21: Lecture 173)
+
+        Driving data from Json files to hashmaps: data.json
+        public getJsonData(){
+            //convert json to string
+            String JsonString = FileUtils.readFileToString(new File("jsonFilePath"));
+            //String to HashMap using dependency "Jackson databind" add it to pom.xml
+            ObjectMapper mapper = new ObjectMapper();
+
+            Get the project path: System.getProperty("user.dir")
+
+            HTML reports: Extent reports
+            MavenRepo -> Extentreports-> add to pom.xml
+            path to save reports: System.getProperty("user.dir")+"\\reports\\index.html"
+
+            will be using two classes, ExtentReports and ExtentSparkReporter
+            public void config(){
+            String path = System.getProperty("user.dir")+"\\reports\\index.html";
+            ExtentSparkReporter reporter = new ExtentSparkReporter(path);
+            reporter.config().setReportName("myReport");
+
+            }
+
+            Test Execution from Maven And integration with Jenkins:
+            Using "Suite xml files" plugin
+            Add plugin to pom.xml under plugins
+
+            to add TestNG xml files in the pom.xml:
+            Create <profiles><profile>
+            <id>Purchase</id>
+            And copy the whole code inside <build> and add the TestNG xml file path to
+            <suiteXmlFile>TestFolder/purchase.xml</suiteXmlFile>
+
+            In the terminal: (make sure you are in the project path)
+            mvn test : to run all tests
+            mvn test -PPurchase : -P to run a profile
+
+            Set Global Variables/Values from mvn command: (the ones in the file.properties)
+            mvn test -Dbrowser=FireFox : -D for mvn parameters
+            Data sent from maven is system property: use System.getProperty to access it
+            System.getProperty("browser") => firefox
+
+            Jenkins: new job -> freestyle -> advanced -> use custom workspace -> (paste the location of the project)
+            Build -> invoke top level maven target -> past mvn commands in Goals (mvn not required, paste them without "mvn")
+            Save.
+            Parametrizing the jenkins job:
+            Configure -> This project is parametrized -> add parameter -> choice parameter ->
+            choice name: browserName
+            choices: chrome, firefox, edge
+            -> Save
+            Change the mvn command to:
+            test -PProdcution -Dbrowser="$browserName"
+            Build with parameters -> firefox -> build
+
+            Cucumber:
+            Given: preconditions
+            When: Describe the user actions
+            And: for additional actions (And + then are used as much as needed)
+            Then: expected output
+            But: for negative output
+
+            example:
+            Scenario: make minimum due payment
+            Given: user is on pay credit card page
+            When: user fills all details and select minimum amount options
+            And: user clicks on Pay button
+            Then: credit card confirmation page is displayed
+            But: error message is displayed
+
+            Setting up cucumber into our framework:
+            getting the dependency : mvn repo: cucumber java and cucumber testng
+            install cucumber plugin
+            Create new feature file : Purchase.feature
+                feature: purchase the order
+                Backgroud: /run before each scenario
+                Given i landed on Ecommerce page
+
+                Scenario Outline: Valid submit of an order
+                Given user logged in with valid <username> and <password>
+                When user add <product> to cart
+                And checkout and submit the order
+                Then Thank you message is displayed
+
+                Examples:
+                |username|password|product|
+                |necro|pass123|shoes|
+
+            Code implementation with Cucumber:
+            stepDefinitions implementation
+            Create stepDefinition.java class
+                public class StepDefinitionImp(){
+                @Given("Given i landed on Ecommerce page")
+                    public void goToEcom(){
+                    //this code will be executed with the step
+                    }
+                    //using regular expression to pass the values of username and password ^ (.+) $
+                @Given("^Given user logged in with valid username (.+) and password (.+)$")
+                    public void loggedIn(String username, String password){
+                        //code to login
+                    }
+                }
+
+
+
+
+
+        }
 
 
 
